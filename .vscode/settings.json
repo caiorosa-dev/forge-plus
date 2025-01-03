@@ -2,6 +2,8 @@
   "typescript.preferences.importModuleSpecifier": "relative",
 	"javascript.preferences.importModuleSpecifier": "relative",
 	"cSpell.words": [
-		"modpack"
+		"minecraft",
+		"modpack",
+		"Modpacks"
 	],
 } 

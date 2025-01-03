@@ -26,6 +26,7 @@ const createWindow = (): void => {
     autoHideMenuBar: true,
     titleBarStyle: 'default',
     trafficLightPosition: { x: 15, y: 10 },
+    backgroundColor: '#020617',
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
       contextIsolation: true,
@@ -39,9 +40,7 @@ const createWindow = (): void => {
   });
 
   mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    const csp = process.env.NODE_ENV === 'development'
-      ? "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
-      : "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self';";
+    const csp = "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; img-src * data:; font-src * data:;";
 
     callback({
       responseHeaders: {
@@ -50,6 +49,8 @@ const createWindow = (): void => {
       },
     });
   });
+
+  mainWindow.webContents.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/114 Safari/537.36');
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);

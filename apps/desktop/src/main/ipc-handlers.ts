@@ -22,7 +22,7 @@ export function registerIPCHandlers() {
 	 * Retorna a lista de modpacks instalados em
 	 * C:\Users\{USER}\curseforge\minecraft\Instances
 	 */
-	ipcMain.handle('get-installed-modpacks', async () => {
+	ipcMain.handle('curse-forge:get-instances', async () => {
 		try {
 			const instances = fs.readdirSync(CF_INSTANCES_DIR, { withFileTypes: true })
 				.filter(dirent => dirent.isDirectory())
@@ -35,7 +35,7 @@ export function registerIPCHandlers() {
 		}
 	});
 
-	ipcMain.handle('dialog:openFile', async (_event, options) => {
+	ipcMain.handle('dialog:open-file', async (_event, options) => {
 		const result = await dialog.showOpenDialog(options);
 
 		return result;
@@ -44,7 +44,7 @@ export function registerIPCHandlers() {
 	/**
 	 * Recebe o caminho de um .json e retorna o objeto do manifest
 	 */
-	ipcMain.handle('load-modpack-manifest', async (_event, filePath: string) => {
+	ipcMain.handle('manifest:load', async (_event, filePath: string) => {
 		try {
 			const data = fs.readFileSync(filePath, 'utf-8');
 			const manifest: ModpackManifest = JSON.parse(data);
@@ -65,7 +65,7 @@ export function registerIPCHandlers() {
 	 * @param manifest - O manifest carregado
 	 * @param instanceName - O nome da pasta da instância no CF_INSTANCES_DIR
 	 */
-	ipcMain.on('update-modpack', async (event, { manifest, instanceName }) => {
+	ipcMain.on('modpack:update', async (event, { manifest, instanceName }) => {
 		try {
 			console.log('Iniciando atualização do modpack para a instância:', instanceName);
 			const modsFolder = path.join(CF_INSTANCES_DIR, instanceName, 'mods');
@@ -84,7 +84,7 @@ export function registerIPCHandlers() {
 				console.log(`Processando mod: ${mod.projectID}`);
 
 				// Sinal para o front-end
-				event.sender.send('modpack-update-progress', {
+				event.sender.send('modpack:update-progress', {
 					step: 'info',
 					status: 'start',
 					projectID: mod.projectID
@@ -131,7 +131,7 @@ export function registerIPCHandlers() {
 				console.log(`Preparando download para o mod: ${projectID}, arquivo: ${fileID}`);
 
 				// Sinal para o front-end
-				event.sender.send('modpack-update-progress', {
+				event.sender.send('modpack:update-progress', {
 					step: 'download',
 					status: 'start',
 					projectID: projectID,
@@ -198,10 +198,11 @@ export function registerIPCHandlers() {
 
 			// Finalizado
 			console.log('Atualização do modpack concluída com sucesso.');
-			event.sender.send('modpack-update-complete', { success: true });
+			event.sender.send('modpack:update-complete', { success: true });
 		} catch (error: any) {
 			console.error('Erro ao atualizar modpack:', error);
-			event.sender.send('modpack-update-complete', { success: false, error: error.message });
+			event.sender.send('modpack:update-error', { success: false, error: error.message });
 		}
 	});
 }
+
