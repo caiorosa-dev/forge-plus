@@ -16,10 +16,11 @@ datasource db {
 model Modpack {
   id String @id @default(uuid())
 
-  displayName String
-  image       String @default("https://placehold.jp/4f46e5/ffffff/150x150.png")
-  description String @default("")
-  modCount    Int    @default(0)
+  displayName            String
+  curseForgeInstanceName String
+  image                  String @default("https://placehold.jp/4f46e5/ffffff/150x150.png")
+  description            String @default("")
+  modCount               Int    @default(0)
 
   minecraftVersion String
   forgeVersion     String

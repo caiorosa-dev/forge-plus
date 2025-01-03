@@ -20,6 +20,9 @@ export class CreateModpackDto {
 	minecraftVersion: string;
 
 	@IsString()
+	curseForgeInstanceName: string;
+
+	@IsString()
 	forgeVersion: string;
 
 	@IsString()
