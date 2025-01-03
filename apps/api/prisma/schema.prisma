@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Modpack {
+  id String @id @default(uuid())
+
+  displayName String
+  image       String @default("https://placehold.jp/4f46e5/ffffff/150x150.png")
+  description String @default("")
+  modCount    Int    @default(0)
+
+  minecraftVersion String
+  forgeVersion     String
+
+  currentVersionTag String
+  versions          ModpackVersion[] @relation(name: "VersionListRelation")
+
+  updatedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+}
+
+model ModpackVersion {
+  id String @id @default(uuid())
+
+  modpackId String
+  tag       String
+  files     Json
+
+  modpack Modpack @relation(fields: [modpackId], references: [id], name: "VersionListRelation")
+
+  createdAt DateTime @default(now())
+
+  @@unique([modpackId, tag])
+}
