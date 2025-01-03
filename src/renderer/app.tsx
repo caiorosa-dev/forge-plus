@@ -4,6 +4,7 @@ import * as ReactDOM from 'react-dom/client';
 import { ModpackManifest } from '../types/modpack-manifest';
 import { ModpackList } from './components/modpack-list';
 import { ProgressBar } from './components/progress-bar';
+import { Logo } from './components/ui/logo';
 
 function App() {
   const [instances, setInstances] = useState<string[]>([]);
@@ -20,10 +21,10 @@ function App() {
     loadInstalledModpacks();
 
     // Listeners de eventos de progresso
-    window.myAPI.on('modpack-update-progress', (_, data) => {
+    window.api.on('modpack-update-progress', (_, data) => {
       setProgressInfos((prev) => {
         if (data.status === 'progress') {
-          const updatedInfos = prev.map(info => 
+          const updatedInfos = prev.map(info =>
             info.projectID === data.projectID && info.fileID === data.fileID ? data : info
           );
           return updatedInfos;
@@ -36,7 +37,7 @@ function App() {
     });
 
     // Evento final de atualização
-    window.myAPI.on('modpack-update-complete', (_, data) => {
+    window.api.on('modpack-update-complete', (_, data) => {
       setIsUpdating(false);
       if (data.success) {
         alert('Modpack atualizado com sucesso!');
@@ -47,8 +48,8 @@ function App() {
 
     // Limpar listeners quando o componente desmontar
     return () => {
-      window.myAPI.removeAllListeners('modpack-update-progress');
-      window.myAPI.removeAllListeners('modpack-update-complete');
+      window.api.removeAllListeners('modpack-update-progress');
+      window.api.removeAllListeners('modpack-update-complete');
     };
   }, []);
 
@@ -57,7 +58,7 @@ function App() {
    */
   const loadInstalledModpacks = async () => {
     try {
-      const result = await window.myAPI.invoke('get-installed-modpacks');
+      const result = await window.api.invoke('get-installed-modpacks');
       setInstances(result);
     } catch (error) {
       console.error(error);
@@ -69,7 +70,7 @@ function App() {
    */
   const handleLoadManifest = async () => {
     try {
-      const { canceled, filePaths } = await window.myAPI.invoke('dialog:openFile', {
+      const { canceled, filePaths } = await window.api.invoke('dialog:openFile', {
         title: 'Selecione o arquivo .json do Modpack',
         filters: [{ name: 'JSON Files', extensions: ['json'] }],
         properties: ['openFile']
@@ -77,7 +78,7 @@ function App() {
 
       if (!canceled && filePaths && filePaths.length > 0) {
         const filePath = filePaths[0];
-        const loadedManifest: ModpackManifest = await window.myAPI.invoke('load-modpack-manifest', filePath);
+        const loadedManifest: ModpackManifest = await window.api.invoke('load-modpack-manifest', filePath);
         setManifest(loadedManifest);
       }
     } catch (err) {
@@ -99,16 +100,17 @@ function App() {
     setIsUpdating(true);
 
     // Envia para o processo principal
-    window.myAPI.send('update-modpack', {
+    window.api.send('update-modpack', {
       manifest,
       instanceName: selectedInstance
     });
   };
 
   return (
-    <div className="h-screen w-screen p-4 bg-gray-100">
-      <div className="max-w-4xl mx-auto bg-white shadow p-4 rounded">
-        <h1 className="text-2xl font-bold mb-4">Forge Plus - Gerenciador de Modpacks</h1>
+    <div className="h-screen w-screen bg-slate-950">
+      <div className="max-w-4xl mx-auto bg-slate-900 shadow p-4 rounded">
+        <Logo size='small' />
+        <h1 className="text-2xl font-bold mb-4">Gerenciador de Modpacks</h1>
 
         <div className="flex gap-4 mb-4">
           <ModpackList
@@ -136,7 +138,7 @@ function App() {
 
         {manifest && (
           <div className="border p-2 rounded mb-4">
-            <p><strong>Manifest:</strong> {manifest.name} - {manifest.version}</p>
+            <p><strong>Manifest:</strong>{manifest.name} - {manifest.version}</p>
             <p>Minecraft: {manifest.minecraft.version}</p>
             <p>Mods: {manifest.files.length}</p>
           </div>

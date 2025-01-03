@@ -4,7 +4,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 // Expor apenas o que for necessário
-contextBridge.exposeInMainWorld('myAPI', {
+contextBridge.exposeInMainWorld('api', {
 	send: (channel: string, data: any) => {
 		ipcRenderer.send(channel, data);
 	},
@@ -17,4 +17,9 @@ contextBridge.exposeInMainWorld('myAPI', {
 	removeAllListeners: (channel: string) => {
 		ipcRenderer.removeAllListeners(channel);
 	},
+	minimizeWindow: () => ipcRenderer.send('window:minimize'),
+	maximizeWindow: () => ipcRenderer.send('window:maximize'),
+	restoreWindow: () => ipcRenderer.send('window:restore'),
+	closeWindow: () => ipcRenderer.send('window:close'),
+	isWindowMaximized: () => ipcRenderer.sendSync('window:isMaximized'),
 });
