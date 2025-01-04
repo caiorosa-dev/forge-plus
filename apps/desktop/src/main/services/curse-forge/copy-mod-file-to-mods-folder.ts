@@ -1,8 +1,8 @@
 import path from 'path';
 import fs from 'fs';
 
-import { getUser } from '../../helpers/get-user';
 import { getProjectInfo } from '../project-info/get';
+import { getModsFolder } from '../../helpers/get-mods-folder';
 
 type CopyModFileToModsFolderPayload = {
 	instanceName: string;
@@ -12,9 +12,7 @@ type CopyModFileToModsFolderPayload = {
 }
 
 export async function copyModFileToModsFolder(payload: CopyModFileToModsFolderPayload) {
-	const user = getUser();
-	const instancesDir = `C:\\Users\\${user}\\curseforge\\minecraft\\Instances`;
-	const modsFolder = path.join(instancesDir, payload.instanceName, 'mods');
+	const modsFolder = getModsFolder(payload.instanceName);
 
 	const projectInfo = await getProjectInfo(payload.projectId);
 

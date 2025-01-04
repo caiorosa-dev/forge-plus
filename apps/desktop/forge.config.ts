@@ -9,9 +9,21 @@ import { mainConfig } from './webpack.main.config';
 import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
-  packagerConfig: {},
+  packagerConfig: {
+    icon: 'src/assets/icon',
+  },
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    new MakerSquirrel({
+      name: 'forge-plus',
+      setupIcon: 'src/assets/icon.ico',
+      setupExe: 'Forge Plus Setup.exe',
+      setupMsi: 'Forge Plus Setup.msi',
+    }),
+    new MakerZIP({}, ['darwin']),
+    new MakerRpm({}),
+    new MakerDeb({}),
+  ],
   plugins: [
     new WebpackPlugin({
       mainConfig,

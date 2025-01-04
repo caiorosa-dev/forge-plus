@@ -4,6 +4,7 @@ export type SendChannelType =
 export type InvokeChannelType =
 	'curse-forge:get-instances'
 	| 'modpack:load-infos'
+	| 'cache:clean'
 	| 'local-modpacks:get-all';
 
 export type EventChannelType =

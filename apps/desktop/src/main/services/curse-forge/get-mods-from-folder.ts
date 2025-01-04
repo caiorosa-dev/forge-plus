@@ -1,11 +1,8 @@
 import fs from 'fs';
-import path from 'path';
-import { getUser } from '../../helpers/get-user';
+import { getModsFolder } from '../../helpers/get-mods-folder';
 
 export function getModsFromFolder(instanceName: string): string[] {
-	const user = getUser();
-	const instancesDir = `C:\\Users\\${user}\\curseforge\\minecraft\\Instances`;
-	const modsFolder = path.join(instancesDir, instanceName, 'mods');
+	const modsFolder = getModsFolder(instanceName);
 
 	if (!fs.existsSync(modsFolder)) {
 		return [];

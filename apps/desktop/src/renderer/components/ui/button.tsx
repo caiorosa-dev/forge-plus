@@ -13,11 +13,12 @@ const buttonVariants = cva(
         secondary: "bg-slate-800 hover:bg-slate-700 text-slate-100 px-6",
         destructive: "bg-red-800 hover:bg-red-700 text-white px-6",
         ghost: "bg-transparent text-indigo-500 hover:text-white hover:bg-indigo-600",
+        'ghost-secondary': "bg-transparent text-slate-200 hover:text-white hover:bg-slate-700",
       },
       size: {
         medium: "h-10 rounded-xl",
         small: "h-8 rounded-lg text-sm",
-        icon: "h-8 w-8 rounded-md",
+        icon: "h-8 w-8 rounded-md p-0",
       },
     },
     defaultVariants: {

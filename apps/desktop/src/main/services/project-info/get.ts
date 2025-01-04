@@ -1,12 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
-import { getUser } from '../../helpers/get-user';
 import { ProjectInfo } from '../../../types/project-info';
+import { app } from 'electron';
 
 export async function getProjectInfo(projectId: string): Promise<ProjectInfo> {
-	const user = getUser();
-	const cacheInfoDirectory = `C:\\Users\\${user}\\AppData\\Roaming\\Forge Plus\\cache\\info`;
+	const cacheInfoDirectory = path.join(app.getPath('appData'), 'cache', 'info');
 
 	const cacheInfoPath = path.join(cacheInfoDirectory, `${projectId}.json`);
 

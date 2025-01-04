@@ -7,6 +7,7 @@ import { fetchModpackFromApi } from './services/modpack/fetch-from-api';
 import { installModpack, InstallProgressCallbackParams } from './services/modpack/install';
 import { loadModsFromFolderToCache } from './services/download/load-mods-to-cache';
 import { createLocalModpackFile } from './services/local-modpacks/create-file';
+import { cleanCache } from './services/cache/clean';
 
 type ModpackInstallPayload = {
 	modpackId: string;
@@ -28,6 +29,15 @@ export function registerIPCHandlers() {
 	 */
 	ipcMain.handle('local-modpacks:get-all', async () => {
 		return getLocalModpacks();
+	});
+
+	/**
+ * Retorna a lista de modpacks instalados no sistema
+ */
+	ipcMain.handle('cache:clean', async (event, type: 'info' | 'files' | 'all') => {
+		await cleanCache(type);
+
+		return true;
 	});
 
 	ipcMain.on('modpack:install', async (event, payload: ModpackInstallPayload) => {
@@ -112,7 +122,6 @@ export function registerIPCHandlers() {
 			event.sender.send('modpack:install:error', {
 				message: 'Erro ao instalar o modpack, tente novamente...'
 			});
-
 		}
 
 		createLocalModpackFile(modpackId, versionTag);

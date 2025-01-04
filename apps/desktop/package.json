@@ -1,7 +1,8 @@
 {
   "name": "desktop",
+  "productName": "Forge Plus",
   "version": "1.0.0",
-  "description": "Ready-to-use project template for building cross-platform desktop applications with Electron, React, TypeScript, and Tailwind CSS.",
+  "description": "Modpack manager integrated with CurseForge.",
   "main": ".webpack/main",
   "scripts": {
     "dev": "electron-forge start",
@@ -11,10 +12,7 @@
     "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [],
-  "author": {
-    "name": "Caio Rosa",
-    "email": "contact@caiorosadev.com"
-  },
+  "author": "Caio Rosa",
   "license": "MIT",
   "devDependencies": {
     "@electron-forge/cli": "^6.2.1",
