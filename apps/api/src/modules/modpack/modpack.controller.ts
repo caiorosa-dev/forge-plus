@@ -18,8 +18,8 @@ export class ModpackController {
 		return this.modpackService.getModpackById(id);
 	}
 
-	@Post()
 	@UseGuards(ApiKeyGuard)
+	@Post()
 	async createModpack(@Body() modpackData: CreateModpackDto): Promise<Modpack> {
 		return this.modpackService.createModpack(modpackData);
 	}
