@@ -79,30 +79,34 @@ export function registerIPCHandlers() {
 			}))
 		});
 
-		await installModpack(modpack, versionTag, (params: InstallProgressCallbackParams) => {
-			const projectInfo = projectInfos.find(projectInfo => projectInfo.id === Number(params.currentProjectId));
+		await installModpack(modpack, versionTag,
+			(params: InstallProgressCallbackParams) => {
+				const projectInfo = projectInfos.find(projectInfo => projectInfo.id === Number(params.currentProjectId));
 
-			if (!projectInfo) {
-				return;
-			}
+				if (!projectInfo) {
+					return;
+				}
 
-			const fileVersion = projectInfo.files.find(file => file.id === Number(params.currentFileId));
+				const fileVersion = projectInfo.files.find(file => file.id === Number(params.currentFileId));
 
-			if (params.progress === 100) {
-				event.sender.send('modpack:install:queue:remove', {
-					projectId: params.currentFileId
+				const totalProgress = (projectInfos.indexOf(projectInfo) + params.progress / 100) / projectInfos.length * 100;
+
+				event.sender.send('modpack:install:progress', {
+					currentMod: {
+						projectId: projectInfo.id,
+						name: projectInfo.title,
+						version: fileVersion?.version || 'Unknown',
+						progress: params.progress,
+					},
+					totalProgress
 				});
-				return;
+			},
+			(projectId: string) => {
+				event.sender.send('modpack:install:queue:remove', {
+					projectId
+				});
 			}
-
-			event.sender.send('modpack:install:progress', {
-				currentMod: {
-					name: projectInfo.title,
-					version: fileVersion?.version || 'Unknown',
-				},
-				progress: params.progress,
-			});
-		});
+		);
 
 		createLocalModpackFile(modpackId, versionTag);
 		event.sender.send('modpack:install:success');

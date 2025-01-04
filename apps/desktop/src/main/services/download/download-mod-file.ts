@@ -5,15 +5,11 @@ import path from 'path';
 import { VersionFile } from '../../../types/modpack';
 import { getUser } from '../../helpers/get-user';
 
-type DownloadModFileCallbacks = {
-	onProgress?: (progress: number) => void;
-}
-
 type DownloadModFileResult = {
 	filePath: string;
 }
 
-export async function downloadModFile(versionFile: VersionFile, callbacks?: DownloadModFileCallbacks): Promise<DownloadModFileResult> {
+export async function downloadModFile(versionFile: VersionFile, onProgress?: (progress: number) => void): Promise<DownloadModFileResult> {
 	const url = `https://www.curseforge.com/api/v1/mods/${versionFile.projectId}/files/${versionFile.fileId}/download`;
 
 	const user = getUser();
@@ -28,6 +24,7 @@ export async function downloadModFile(versionFile: VersionFile, callbacks?: Down
 	}
 
 	if (fs.existsSync(cacheFilePath)) {
+		onProgress?.(100);
 		return {
 			filePath: cacheFilePath
 		};
@@ -45,7 +42,7 @@ export async function downloadModFile(versionFile: VersionFile, callbacks?: Down
 		downloaded += chunk.length;
 		const progressPercentage = totalLength ? (downloaded / totalLength) * 100 : 0;
 
-		callbacks?.onProgress?.(progressPercentage);
+		onProgress?.(progressPercentage);
 	});
 
 	await new Promise<void>((resolve, reject) => {

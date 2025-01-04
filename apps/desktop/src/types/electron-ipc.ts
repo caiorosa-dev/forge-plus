@@ -40,7 +40,9 @@ export type ModpackInstallProgressData = {
 	currentMod: {
 		name: string;
 		version: string;
+		projectId: number;
+		progress: number;
 	};
-	progress: number;
+	totalProgress: number;
 };
 

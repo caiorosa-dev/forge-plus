@@ -11,7 +11,7 @@ type InstallModpackPayload = {
 };
 
 interface ModpackDownloadContextProps {
-	progress: number;
+	totalProgress: number;
 	loadInfosProgress: InfoProgressData | null;
 	queue: ModpackInstallQueueStartData['queue'];
 	currentMod: ModpackInstallProgressData['currentMod'] | null;
@@ -26,16 +26,16 @@ const ModpackDownloadContext = createContext<ModpackDownloadContextProps | undef
 export const ModpackDownloadProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	const queryClient = useQueryClient();
 
-	const [progress, setProgress] = useState<number>(0);
 	const [queue, setQueue] = useState<ModpackInstallQueueStartData['queue']>([]);
 	const [currentMod, setCurrentMod] = useState<ModpackInstallProgressData['currentMod'] | null>(null);
+	const [totalProgress, setTotalProgress] = useState<number>(0);
 	const [error, setError] = useState<ModpackInstallErrorData | null>(null);
 	const [isDownloading, setIsDownloading] = useState<boolean>(false);
 	const [isWorking, setIsWorking] = useState<boolean>(false);
 	const [loadInfosProgress, setLoadInfosProgress] = useState<InfoProgressData | null>(null);
 
 	const handleProgress = useCallback((_event: any, data: ModpackInstallProgressData) => {
-		setProgress(data.progress);
+		setTotalProgress(data.totalProgress);
 		setCurrentMod(data.currentMod);
 	}, []);
 
@@ -64,7 +64,7 @@ export const ModpackDownloadProvider: React.FC<{ children: React.ReactNode }> = 
 	function cleanState() {
 		setIsDownloading(false);
 		setIsWorking(false);
-		setProgress(0);
+		setTotalProgress(0);
 		setQueue([]);
 		setCurrentMod(null);
 		setError(null);
@@ -86,7 +86,7 @@ export const ModpackDownloadProvider: React.FC<{ children: React.ReactNode }> = 
 	useListener('modpack:install:success', handleSuccess);
 
 	return (
-		<ModpackDownloadContext.Provider value={{ progress, queue, currentMod, error, isDownloading, isWorking, installModpack, loadInfosProgress }}>
+		<ModpackDownloadContext.Provider value={{ totalProgress, queue, currentMod, error, isDownloading, isWorking, installModpack, loadInfosProgress }}>
 			{children}
 		</ModpackDownloadContext.Provider>
 	);

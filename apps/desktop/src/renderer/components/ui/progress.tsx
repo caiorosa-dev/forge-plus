@@ -1,16 +1,18 @@
 import * as React from "react";
+import { cn } from '../../libs/utils';
 
 interface ProgressBarProps {
 	current: number;
 	max: number;
 	label: string;
+	className?: string;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ current, max, label }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ current, max, label, className }) => {
 	const progress = (current / max) * 100;
 
 	return (
-		<div className="w-full bg-slate-800 rounded-full h-6 relative">
+		<div className={cn("w-full bg-slate-800 rounded-full h-6 relative", className)}>
 			<div
 				className="bg-indigo-600 h-6 rounded-full"
 				style={{ width: `${progress}%` }}
