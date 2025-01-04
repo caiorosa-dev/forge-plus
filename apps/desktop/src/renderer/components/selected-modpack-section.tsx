@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { DownloadCloud } from 'lucide-react';
 import { Modpack, LocalModpack } from "../../types/modpack";
+import { useModpackDownload } from '../context/modpack-download-context';
 import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { useListener } from '../hooks/use-listener';
-import { useQueryClient } from '@tanstack/react-query';
+import { Button, ButtonIcon } from './ui/button';
+import ProgressBar from './ui/progress';
 
 interface SelectedModpackSectionProps {
 	modpack: Modpack;
@@ -12,31 +12,18 @@ interface SelectedModpackSectionProps {
 }
 
 export function SelectedModpackSection({ modpack, installedModpack, hasInstance }: SelectedModpackSectionProps) {
-	const queryClient = useQueryClient();
-	const [syncProgress, setSyncProgress] = useState(0);
-	const [isSyncing, setIsSyncing] = useState(false);
+	const { installModpack, isWorking, isDownloading, loadInfosProgress } = useModpackDownload();
 
 	const isInstalled = hasInstance;
 	const isSynced = !!installedModpack && isInstalled;
 	const isUpdated = isSynced && installedModpack?.installedVersionTag === modpack.currentVersionTag;
 
-	useListener<number>('modpack:sync:progress', (event, data) => {
-		setSyncProgress(data);
-		if (data === 100) {
-			setIsSyncing(false);
-		}
-	});
-
-	useListener('modpack:sync:success', () => {
-		setIsSyncing(false);
-		setSyncProgress(0);
-		queryClient.invalidateQueries({ queryKey: ['local-modpacks'] });
-	});
-
 	function handleInstallModpack() {
-		setIsSyncing(true);
-
-		window.api.send('modpack:sync', modpack.id);
+		installModpack({
+			modpackId: modpack.id,
+			versionTag: modpack.currentVersionTag,
+			loadToCache: !isSynced
+		});
 	}
 
 	return (
@@ -70,8 +57,18 @@ export function SelectedModpackSection({ modpack, installedModpack, hasInstance 
 				<p><strong>Versão do Forge:</strong> {modpack.forgeVersion}</p>
 				<p><strong>Versão recomendada:</strong> {modpack.currentVersionTag}</p>
 			</div>
-			<Button onClick={handleInstallModpack} disabled={isSyncing}>
-				Instalar {isSyncing && <span className='text-xs'>{syncProgress.toFixed(2)}%</span>}
+			{isWorking && !isDownloading && (
+				<>
+					<div className='flex justify-between items-center'>
+						<p>Processando informações dos mods...</p>
+						{loadInfosProgress && <p className='text-indigo-600 text-sm'>{loadInfosProgress.lastProjectName}</p>}
+					</div>
+					{loadInfosProgress && <ProgressBar label={`${loadInfosProgress.progress}%`} current={loadInfosProgress.progress} max={100} />}
+				</>
+			)}
+			<Button onClick={handleInstallModpack} disabled={isWorking || isUpdated}>
+				<ButtonIcon icon={DownloadCloud} isLoading={isWorking} />
+				{isWorking ? 'Instalando...' : 'Atualizar'}
 			</Button>
 		</section>
 	)

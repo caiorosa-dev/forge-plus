@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HomePage } from './pages/home';
 import { LaunchScreen } from './components/layout/launch-screen';
+import { ModpackDownloadProvider } from './context/modpack-download-context';
 
 function App() {
   const queryClient = new QueryClient();
@@ -10,7 +11,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LaunchScreen />
-      <HomePage />
+      <ModpackDownloadProvider>
+        <HomePage />
+      </ModpackDownloadProvider>
     </QueryClientProvider>
   );
 }

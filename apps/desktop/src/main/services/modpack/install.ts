@@ -4,19 +4,25 @@ import { copyModFileToModsFolder } from '../curse-forge/copy-mod-file-to-mods-fo
 import { downloadModFile } from '../download/download-mod-file';
 import { createLocalModpackFile } from '../local-modpacks/create-file';
 
-export async function installModpack(modpack: Modpack, versionTag: string, onProgress: (progress: number) => void) {
+export type InstallProgressCallbackParams = {
+	currentProjectId: string;
+	currentFileId: string;
+	progress: number;
+}
+
+export async function installModpack(modpack: Modpack, versionTag: string, onProgress: (params: InstallProgressCallbackParams) => void) {
 	const version = modpack.versions.find(version => version.tag === versionTag);
-	const totalFiles = version.files.length;
-	let downloadedFiles = 0;
 
 	cleanInstanceModsFolder(modpack.curseForgeInstanceName);
 
 	for (const file of version.files) {
 		const { filePath } = await downloadModFile(file, {
 			onProgress: (progress) => {
-				const overallProgress = ((downloadedFiles + progress / 100) / totalFiles) * 100;
-
-				onProgress(overallProgress);
+				onProgress({
+					currentProjectId: file.projectId,
+					currentFileId: file.fileId,
+					progress
+				});
 			}
 		});
 
@@ -26,8 +32,6 @@ export async function installModpack(modpack: Modpack, versionTag: string, onPro
 			projectId: file.projectId,
 			fileId: file.fileId
 		});
-
-		downloadedFiles++;
 	}
 
 	createLocalModpackFile(modpack.id, versionTag);

@@ -11,7 +11,7 @@ export function createLocalModpackFile(modpackId: string, versionTag: string) {
 		fs.mkdirSync(installedModpacksDir, { recursive: true });
 	}
 
-	const modpackFilePath = path.join(installedModpacksDir, `${modpackId}-${versionTag}.json`);
+	const modpackFilePath = path.join(installedModpacksDir, `${modpackId}.json`);
 	if (fs.existsSync(modpackFilePath)) {
 		fs.rmSync(modpackFilePath);
 	}

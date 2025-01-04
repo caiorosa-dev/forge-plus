@@ -12,8 +12,10 @@ export function loadModsFromFolderToCache(modpack: Modpack, projectInfos: Projec
 	for (let i = 0; i < projectInfos.length; i++) {
 		const projectInfo = projectInfos[i];
 		const validModFile = projectInfo.files.find(file => modFilesList.find(modFile => modFile === file.name));
+
 		if (validModFile) {
 			const modFilePath = path.join(getModsFolder(modpack.curseForgeInstanceName), validModFile.name);
+
 			saveModFileToCache(modFilePath, {
 				projectId: projectInfo.id.toString(),
 				fileId: validModFile.id.toString()

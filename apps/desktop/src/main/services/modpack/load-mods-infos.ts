@@ -2,7 +2,12 @@ import { ProjectInfo } from '../../../types/project-info';
 import { getProjectInfo } from '../project-info/get';
 import { fetchModpackFromApi } from './fetch-from-api';
 
-export async function loadModpackInfos(modpackId: string, onProgress: (progress: number) => void): Promise<ProjectInfo[]> {
+export type InfoProgressCallbackParams = {
+	lastProjectName: string;
+	progress: number;
+}
+
+export async function loadModpackInfos(modpackId: string, onProgress: (params: InfoProgressCallbackParams) => void): Promise<ProjectInfo[]> {
 	const modpack = await fetchModpackFromApi(modpackId);
 	const latestVersion = modpack.versions.find(version => version.tag === modpack.currentVersionTag);
 
@@ -18,7 +23,10 @@ export async function loadModpackInfos(modpackId: string, onProgress: (progress:
 		const projectInfo = await getProjectInfo(file.projectId);
 
 		projectInfos.push(projectInfo);
-		onProgress((i + 1) / latestVersion.files.length);
+		onProgress({
+			lastProjectName: projectInfo.title,
+			progress: Math.round(((i + 1) / latestVersion.files.length) * 100)
+		});
 	}
 
 	return projectInfos;

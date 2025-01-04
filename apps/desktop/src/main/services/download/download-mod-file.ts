@@ -51,7 +51,6 @@ export async function downloadModFile(versionFile: VersionFile, callbacks?: Down
 	await new Promise<void>((resolve, reject) => {
 		response.data.pipe(writerStream);
 		writerStream.on('finish', () => {
-			console.log(`Download completo para o arquivo: ${versionFile.fileId}`);
 			resolve();
 		});
 		writerStream.on('error', (err) => {

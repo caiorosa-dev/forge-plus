@@ -10,6 +10,7 @@ import { useModpacks } from '../hooks/api/use-modpacks';
 import { useQueryClient } from '@tanstack/react-query';
 import { SelectedModpackSection } from '../components/selected-modpack-section';
 import { useCurseForgeInstances } from '../hooks/electron-integration/use-curse-forge-instances';
+import { Header } from '../components/layout/header';
 
 export function HomePage() {
 	const queryClient = useQueryClient();
@@ -35,9 +36,7 @@ export function HomePage() {
 
 	return (
 		<main className="min-h-screen h-full max-w-[100vw] w-full bg-slate-950 grid grid-rows-[auto_1fr_auto] gap-4">
-			<header className='p-4'>
-				<p className='text-slate-300 text-center'>Nenhum download em andamento</p>
-			</header>
+			<Header />
 			<div className='grid grid-cols-2 gap-8 px-8'>
 				<section className='bg-slate-900 p-4 rounded-lg flex flex-col gap-6'>
 					<header className='flex justify-between items-center'>
