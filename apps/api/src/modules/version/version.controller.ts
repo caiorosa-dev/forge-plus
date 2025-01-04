@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Delete, Param, Body, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Param, Body, NotFoundException, UseGuards } from '@nestjs/common';
 import { VersionService } from './version.service';
 import { CreateVersionDto } from './dto/create-version.dto';
 import { PrismaService } from '../../shared/prisma/prisma.service';
+import { ApiKeyGuard } from '../../shared/api-key.guard';
 
 @Controller('versions')
 export class VersionController {
@@ -20,6 +21,7 @@ export class VersionController {
 		return this.versionService.getVersionById(id);
 	}
 
+	@UseGuards(ApiKeyGuard)
 	@Post()
 	async createVersion(@Body() createVersionDto: CreateVersionDto) {
 		const modpackExists = await this.prisma.modpack.findUnique({
@@ -33,6 +35,7 @@ export class VersionController {
 		return this.versionService.createVersion(createVersionDto);
 	}
 
+	@UseGuards(ApiKeyGuard)
 	@Delete(':id')
 	async deleteVersion(@Param('id') id: string) {
 		return this.versionService.deleteVersion(id);
