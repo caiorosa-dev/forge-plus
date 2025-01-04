@@ -5,4 +5,5 @@ export type IPCChannelType =
 	| 'modpack:update'
 	| 'modpack:update-progress'
 	| 'modpack:update-complete'
-	| 'modpack:update-error';
+	| 'modpack:update-error'
+	| 'local-modpacks:get-all';

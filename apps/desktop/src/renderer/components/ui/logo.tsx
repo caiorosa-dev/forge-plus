@@ -3,10 +3,11 @@ import { cn } from '../../libs/utils';
 
 type Props = {
 	size?: "normal" | "large" | "small";
+	color?: "white" | "indigo";
 	className?: string;
 };
 
-export function Logo({ size, className }: Props) {
+export function Logo({ size, color, className }: Props) {
 	let imageSize = "";
 	let textSize = "";
 
@@ -27,7 +28,7 @@ export function Logo({ size, className }: Props) {
 
 	return (
 		<div className={cn("flex cursor-default items-center justify-center gap-3", className)}>
-			<BoltIcon className={cn("text-indigo-600", imageSize)} />
+			<BoltIcon className={cn("text-indigo-600", color === "white" && "text-white", imageSize)} />
 			<h2 className={cn("font-bold text-white", textSize)}>forgeplus</h2>
 		</div>
 	);

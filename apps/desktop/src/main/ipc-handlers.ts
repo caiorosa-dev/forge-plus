@@ -6,6 +6,7 @@ import axios from 'axios';
 import os from 'os';
 import { ModpackManifest } from '../types/modpack-manifest';
 import { ProjectInfo } from '../types/project-info';
+import { getLocalModpacks } from './services/local-modpacks/get';
 
 const USER = os.userInfo().username;
 const CF_INSTANCES_DIR = `C:\\Users\\${USER}\\curseforge\\minecraft\\Instances`;
@@ -35,7 +36,11 @@ export function registerIPCHandlers() {
 		}
 	});
 
-	ipcMain.handle('dialog:open-file', async (_event, options) => {
+	ipcMain.handle('local-modpacks:get-all', async () => {
+		return getLocalModpacks();
+	});
+
+	ipcMain.handle('dialog:open-file', async (_event, options: Electron.OpenDialogOptions) => {
 		const result = await dialog.showOpenDialog(options);
 
 		return result;

@@ -27,5 +27,6 @@ export type ModpackVersion = {
 };
 
 export type LocalModpack = {
+	modpackId: string;
 	installedVersionTag: string;
 }

@@ -16,7 +16,9 @@ const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1280,
-    height: 800,
+    height: 720,
+    minWidth: 1000,
+    minHeight: 600,
     title: 'Forge Plus',
     darkTheme: true,
     show: false,

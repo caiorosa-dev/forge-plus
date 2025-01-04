@@ -6,7 +6,7 @@ declare global {
 		api: {
 			// IPC Main
 			send: (channel: IPCChannelType, data: any) => void;
-			invoke: (channel: IPCChannelType, data?: any) => Promise<any>;
+			invoke: <T = any>(channel: IPCChannelType, data?: any) => Promise<T>;
 			on: (channel: IPCChannelType, listener: (event: any, data: any) => void) => void;
 			removeAllListeners: (channel: IPCChannelType) => void;
 			// Window
