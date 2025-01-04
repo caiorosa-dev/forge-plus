@@ -6,6 +6,7 @@ import { Spinner } from './ui/spinner';
 type ModpackListProps = {
   modpacks: Modpack[];
   installedModpacks: LocalModpack[];
+  instances: string[];
 
   selectedModpackId?: string;
   onSelectModpack: (modpackId: string) => void;
@@ -18,11 +19,13 @@ type ModpackCardProps = {
   installedVersionTag?: string;
   onClick: () => void;
   isSelected: boolean;
+  hasInstance: boolean;
 }
 
-function ModpackCard({ modpack, installedVersionTag, onClick, isSelected }: ModpackCardProps) {
-  const isInstalled = installedVersionTag !== undefined;
-  const isLatestVersion = installedVersionTag === modpack.currentVersionTag;
+function ModpackCard({ modpack, installedVersionTag, onClick, isSelected, hasInstance }: ModpackCardProps) {
+  const isInstalled = hasInstance;
+  const isSynced = !!installedVersionTag && isInstalled;
+  const isUpdated = isSynced && installedVersionTag === modpack.currentVersionTag;
 
   return (
     <li className={cn('bg-slate-800 p-2 rounded-lg flex items-center gap-4 border border-transparent hover:border-indigo-600 transition-colors cursor-pointer', isSelected && 'border-indigo-700')} onClick={onClick}>
@@ -31,8 +34,13 @@ function ModpackCard({ modpack, installedVersionTag, onClick, isSelected }: Modp
         <header className='flex items-center gap-2'>
           <p className='text-white'>{modpack.displayName}</p>
           {!isInstalled && <Badge variant='slate'>Não instalado</Badge>}
-          {isInstalled && !isLatestVersion && <Badge variant='amber'>{installedVersionTag}</Badge>}
-          {isInstalled && isLatestVersion && <Badge variant='emerald'>{modpack.currentVersionTag}</Badge>}
+          {!isSynced && (
+            <Badge variant='red'>
+              Não sincronizado
+            </Badge>
+          )}
+          {isSynced && !isUpdated && <Badge variant='amber'>{installedVersionTag}</Badge>}
+          {isSynced && isUpdated && <Badge variant='emerald'>{modpack.currentVersionTag}</Badge>}
         </header>
         <p className='text-slate-300 text-sm'>
           {modpack.description}
@@ -47,7 +55,7 @@ function ModpackCard({ modpack, installedVersionTag, onClick, isSelected }: Modp
   )
 }
 
-export function ModpackList({ modpacks, installedModpacks, selectedModpackId, onSelectModpack, isLoading }: ModpackListProps) {
+export function ModpackList({ modpacks, installedModpacks, selectedModpackId, onSelectModpack, isLoading, instances }: ModpackListProps) {
   function getInstalledVersionTag(modpackId: string) {
     const installedModpack = installedModpacks.find(installedModpack => installedModpack.modpackId === modpackId);
 
@@ -68,6 +76,7 @@ export function ModpackList({ modpacks, installedModpacks, selectedModpackId, on
         <ModpackCard
           key={modpack.id}
           modpack={modpack}
+          hasInstance={instances.includes(modpack.curseForgeInstanceName)}
           installedVersionTag={getInstalledVersionTag(modpack.id)}
           onClick={() => onSelectModpack(modpack.id)}
           isSelected={modpack.id === selectedModpackId}

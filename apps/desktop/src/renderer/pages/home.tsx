@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useLocalModpacks } from '../hooks/electron-integration/use-local-modpacks';
 import { useModpacks } from '../hooks/api/use-modpacks';
 import { useQueryClient } from '@tanstack/react-query';
+import { SelectedModpackSection } from '../components/selected-modpack-section';
+import { useCurseForgeInstances } from '../hooks/electron-integration/use-curse-forge-instances';
 
 export function HomePage() {
 	const queryClient = useQueryClient();
@@ -15,6 +17,7 @@ export function HomePage() {
 
 	const { modpacks, isLoading: isLoadingModpacks } = useModpacks();
 	const { installedModpacks, isLoading: isLoadingInstalledModpacks } = useLocalModpacks();
+	const { instances } = useCurseForgeInstances();
 
 	function handleSelectModpack(modpackId: string) {
 		if (selectedModpackId === modpackId) {
@@ -45,7 +48,14 @@ export function HomePage() {
 							<ButtonIcon icon={RefreshCcw} isLoading={false} />
 						</Button>
 					</header>
-					<ModpackList modpacks={modpacks} installedModpacks={installedModpacks} onSelectModpack={handleSelectModpack} selectedModpackId={selectedModpackId} isLoading={isLoadingModpacks || isLoadingInstalledModpacks} />
+					<ModpackList
+						modpacks={modpacks}
+						instances={instances}
+						installedModpacks={installedModpacks}
+						onSelectModpack={handleSelectModpack}
+						selectedModpackId={selectedModpackId}
+						isLoading={isLoadingModpacks || isLoadingInstalledModpacks}
+					/>
 				</section>
 				{!selectedModpackId && (
 					<section className='p-4 rounded-lg border border-slate-800 border-dashed flex justify-center items-center'>
@@ -53,6 +63,13 @@ export function HomePage() {
 							Nenhum modpack selecionado
 						</p>
 					</section>
+				)}
+				{selectedModpackId && (
+					<SelectedModpackSection
+						modpack={modpacks.find(modpack => modpack.id === selectedModpackId)!}
+						installedModpack={installedModpacks.find(localModpack => localModpack.modpackId === selectedModpackId)}
+						hasInstance={instances.includes(modpacks.find(modpack => modpack.id === selectedModpackId)!.curseForgeInstanceName)}
+					/>
 				)}
 			</div>
 			<Footer />

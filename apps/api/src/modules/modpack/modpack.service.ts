@@ -10,7 +10,11 @@ export class ModpackService {
 	async getAllModpacks(): Promise<Modpack[]> {
 		return this.prisma.modpack.findMany({
 			include: {
-				versions: true,
+				versions: {
+					orderBy: {
+						createdAt: 'desc'
+					}
+				}
 			}
 		});
 	}
@@ -20,9 +24,8 @@ export class ModpackService {
 			where: { id },
 			include: {
 				versions: {
-					select: {
-						tag: true,
-						createdAt: true,
+					orderBy: {
+						createdAt: 'desc'
 					}
 				},
 			}
