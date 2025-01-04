@@ -5,6 +5,8 @@ export type InvokeChannelType =
 	'curse-forge:get-instances'
 	| 'modpack:load-infos'
 	| 'cache:clean'
+	| 'upload:modpack'
+	| 'upload:version'
 	| 'local-modpacks:get-all';
 
 export type EventChannelType =
@@ -27,21 +29,21 @@ export type InfoProgressData = {
 
 export type ModpackInstallQueueStartData = {
 	queue: {
-		projectId: number;
+		projectId: string;
 		name: string;
 		image: string;
 	}[];
 };
 
 export type ModpackInstallQueueRemoveData = {
-	projectId: number;
+	projectId: string;
 };
 
 export type ModpackInstallProgressData = {
 	currentMod: {
 		name: string;
 		version: string;
-		projectId: number;
+		projectId: string;
 		progress: number;
 	};
 	totalProgress: number;

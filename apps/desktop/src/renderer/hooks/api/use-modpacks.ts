@@ -11,6 +11,7 @@ export function useModpacks() {
 			return response.data;
 		},
 		refetchInterval: false,
+		refetchOnMount: false,
 	});
 
 	return {

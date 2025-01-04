@@ -12,7 +12,7 @@ type DownloadModFileResult = {
 export async function downloadModFile(versionFile: VersionFile, onProgress?: (progress: number) => void): Promise<DownloadModFileResult> {
 	const url = `https://www.curseforge.com/api/v1/mods/${versionFile.projectId}/files/${versionFile.fileId}/download`;
 
-	const cacheFilesDir = path.join(app.getPath('appData'), 'cache', 'files');
+	const cacheFilesDir = path.join(app.getPath('appData'), 'Forge Plus', 'app-cache', 'files');
 	const cacheFilePath = path.join(cacheFilesDir, `${versionFile.projectId}-${versionFile.fileId}`);
 
 	const requestConfig: AxiosRequestConfig = {

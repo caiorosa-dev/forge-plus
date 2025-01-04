@@ -50,7 +50,7 @@ export const ModpackDownloadProvider: React.FC<{ children: React.ReactNode }> = 
 
 	const handleQueueRemove = useCallback((_event: any, data: ModpackInstallQueueRemoveData) => {
 		setQueue(prevQueue => prevQueue.filter(mod => mod.projectId !== data.projectId));
-	}, []);
+	}, [queue]);
 
 	const handleError = useCallback((_event: any, data: ModpackInstallErrorData) => {
 		setError(data);

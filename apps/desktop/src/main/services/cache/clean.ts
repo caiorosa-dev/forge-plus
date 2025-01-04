@@ -4,7 +4,7 @@ import path from 'path';
 import { app } from 'electron';
 
 export async function cleanCache(type: 'info' | 'files' | 'all') {
-	const cacheDir = path.join(app.getPath('appData'), 'cache');
+	const cacheDir = path.join(app.getPath('appData'), 'Forge Plus', 'app-cache');
 
 	try {
 		if (type === 'all') {

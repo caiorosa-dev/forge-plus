@@ -9,12 +9,12 @@ import { maxStringLength } from '../../helpers/max-string-length';
 
 type QueuePopoverProps = {
 	queue?: {
-		projectId: number;
+		projectId: string;
 		name: string;
 		image: string;
 	}[];
 	currentMod?: {
-		projectId: number;
+		projectId: string;
 		name: string;
 		progress: number;
 	} | null;
@@ -28,7 +28,7 @@ export function QueuePopover({ queue, currentMod }: QueuePopoverProps) {
 			<PopoverTrigger asChild>
 				<Button variant='secondary' size='small' className='justify-self-end'>
 					<ButtonIcon icon={List} />
-					Fila de downloads
+					Fila de downloads ({queue?.length})
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent className='max-h-[50vh] overflow-y-auto'>

@@ -5,7 +5,7 @@ import { ProjectInfo } from '../../../types/project-info';
 import { app } from 'electron';
 
 export async function getProjectInfo(projectId: string): Promise<ProjectInfo> {
-	const cacheInfoDirectory = path.join(app.getPath('appData'), 'cache', 'info');
+	const cacheInfoDirectory = path.join(app.getPath('appData'), 'Forge Plus', 'app-cache', 'info');
 
 	const cacheInfoPath = path.join(cacheInfoDirectory, `${projectId}.json`);
 

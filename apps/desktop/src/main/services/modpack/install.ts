@@ -18,8 +18,8 @@ export async function installModpack(modpack: Modpack, versionTag: string, onPro
 	for (const file of version.files) {
 		const { filePath } = await downloadModFile(file, (progress) => {
 			onProgress({
-				currentProjectId: file.projectId,
-				currentFileId: file.fileId,
+				currentProjectId: file.projectId.toString(),
+				currentFileId: file.fileId.toString(),
 				progress
 			});
 		});
@@ -27,11 +27,11 @@ export async function installModpack(modpack: Modpack, versionTag: string, onPro
 		await copyModFileToModsFolder({
 			instanceName: modpack.curseForgeInstanceName,
 			cachedFilePath: filePath,
-			projectId: file.projectId,
-			fileId: file.fileId
+			projectId: file.projectId.toString(),
+			fileId: file.fileId.toString()
 		});
 
-		onQueueRemove(file.projectId);
+		onQueueRemove(file.projectId.toString());
 	}
 
 	createLocalModpackFile(modpack.id, versionTag);

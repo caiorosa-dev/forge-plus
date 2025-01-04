@@ -8,6 +8,8 @@ import { installModpack, InstallProgressCallbackParams } from './services/modpac
 import { loadModsFromFolderToCache } from './services/download/load-mods-to-cache';
 import { createLocalModpackFile } from './services/local-modpacks/create-file';
 import { cleanCache } from './services/cache/clean';
+import { uploadModpack, UploadModpackPayload } from './services/upload/modpack';
+import { uploadModpackVersion, UploadModpackVersionPayload } from './services/upload/modpack-version';
 
 type ModpackInstallPayload = {
 	modpackId: string;
@@ -32,12 +34,42 @@ export function registerIPCHandlers() {
 	});
 
 	/**
- * Retorna a lista de modpacks instalados no sistema
- */
+	 * Limpa o cache de informações de modpacks
+	 */
 	ipcMain.handle('cache:clean', async (event, type: 'info' | 'files' | 'all') => {
 		await cleanCache(type);
 
 		return true;
+	});
+
+	/**
+	 * Envia um modpack para a API
+	 */
+	ipcMain.handle('upload:modpack', async (event, payload: UploadModpackPayload) => {
+		try {
+			await uploadModpack(payload);
+
+			return true;
+		} catch (error) {
+			console.error(error);
+
+			return false;
+		}
+	});
+
+	/**
+	 * Envia uma nova versão de um modpack para a API
+	 */
+	ipcMain.handle('upload:version', async (event, payload: UploadModpackVersionPayload) => {
+		try {
+			await uploadModpackVersion(payload);
+
+			return true;
+		} catch (error) {
+			console.error(error);
+
+			return false;
+		}
 	});
 
 	ipcMain.on('modpack:install', async (event, payload: ModpackInstallPayload) => {
@@ -83,7 +115,7 @@ export function registerIPCHandlers() {
 
 		event.sender.send('modpack:install:queue:start', {
 			queue: projectInfos.map(projectInfo => ({
-				projectId: projectInfo.id,
+				projectId: projectInfo.id.toString(),
 				name: projectInfo.title,
 				image: projectInfo.thumbnail
 			}))
@@ -104,7 +136,7 @@ export function registerIPCHandlers() {
 
 					event.sender.send('modpack:install:progress', {
 						currentMod: {
-							projectId: projectInfo.id,
+							projectId: projectInfo.id.toString(),
 							name: projectInfo.title,
 							version: fileVersion?.version || 'Unknown',
 							progress: params.progress,
@@ -119,6 +151,7 @@ export function registerIPCHandlers() {
 				}
 			);
 		} catch (error) {
+			console.error(error);
 			event.sender.send('modpack:install:error', {
 				message: 'Erro ao instalar o modpack, tente novamente...'
 			});

@@ -1,1 +1,1 @@
-export const API_URL = 'http://localhost:3333';
+export const API_URL = 'https://forge-plus.caiorosadev.com';

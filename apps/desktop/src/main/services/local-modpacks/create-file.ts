@@ -1,11 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import { getUser } from '../../helpers/get-user';
 import { LocalModpack } from '../../../types/modpack';
+import { app } from 'electron';
 
 export function createLocalModpackFile(modpackId: string, versionTag: string) {
-	const user = getUser();
-	const installedModpacksDir = `C:\\Users\\${user}\\AppData\\Roaming\\Forge Plus\\modpacks`;
+	const installedModpacksDir = path.join(app.getPath('appData'), 'Forge Plus', 'modpacks');
 
 	if (!fs.existsSync(installedModpacksDir)) {
 		fs.mkdirSync(installedModpacksDir, { recursive: true });

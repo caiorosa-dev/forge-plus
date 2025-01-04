@@ -1,4 +1,5 @@
 import { LocalModpack, Modpack } from '../../types/modpack';
+import { maxStringLength } from '../helpers/max-string-length';
 import { cn } from '../libs/utils';
 import { Badge } from './ui/badge';
 import { Spinner } from './ui/spinner';
@@ -43,7 +44,7 @@ function ModpackCard({ modpack, installedVersionTag, onClick, isSelected, hasIns
           {isSynced && isUpdated && <Badge variant='emerald'>{modpack.currentVersionTag}</Badge>}
         </header>
         <p className='text-slate-300 text-sm'>
-          {modpack.description}
+          {maxStringLength(modpack.description, 155)}
         </p>
         <footer className='flex gap-2'>
           <p className='text-slate-400 text-sm'>MC {modpack.minecraftVersion}</p>
