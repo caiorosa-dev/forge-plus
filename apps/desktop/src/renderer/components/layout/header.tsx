@@ -5,6 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import ProgressBar from '../ui/progress';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { cn } from '../../libs/utils';
+import { maxStringLength } from '../../helpers/max-string-length';
 
 type QueuePopoverProps = {
 	queue?: {
@@ -40,7 +41,7 @@ export function QueuePopover({ queue, currentMod }: QueuePopoverProps) {
 							(
 								<li key={mod.projectId} className={cn('flex gap-2 items-center bg-slate-800 p-1 rounded-md', isCurrentMod && 'bg-slate-700')}>
 									<img src={mod.image} alt={mod.name} className='w-8 h-8 rounded-md object-fill' />
-									<p className='text-slate-300 text-sm'>{mod.name} {isCurrentMod && <span className='text-indigo-300 text-xs'>{Math.round(currentMod.progress)}%</span>}</p>
+									<p className='text-slate-300 text-sm'>{maxStringLength(mod.name || '', 25)} {isCurrentMod && <span className='text-indigo-300 text-xs'>{Math.round(currentMod.progress)}%</span>}</p>
 								</li>
 							)
 						)
@@ -61,7 +62,7 @@ export function Header() {
 			)}
 			{isDownloading && (
 				<div className='grid gap-4 grid-cols-5'>
-					<p className='text-slate-300 text-start'>{currentMod?.name}</p>
+					<p className='text-slate-400 text-start text-sm'>{maxStringLength(currentMod?.name || '', 25)}</p>
 					<ProgressBar className='col-span-3' current={totalProgress} max={100} label={`${Math.round(totalProgress)}%`} />
 					<QueuePopover queue={queue} currentMod={currentMod} />
 				</div>

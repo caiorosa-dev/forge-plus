@@ -55,10 +55,12 @@ export const ModpackDownloadProvider: React.FC<{ children: React.ReactNode }> = 
 	const handleError = useCallback((_event: any, data: ModpackInstallErrorData) => {
 		setError(data);
 		cleanState();
+		alert(data.message);
 	}, []);
 
 	const handleSuccess = useCallback(() => {
 		cleanState();
+		alert('Modpack instalado com sucesso');
 	}, []);
 
 	function cleanState() {

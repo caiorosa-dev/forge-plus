@@ -26,7 +26,6 @@ export async function copyModFileToModsFolder(payload: CopyModFileToModsFolderPa
 	const finalFilePath = path.join(modsFolder, fileName);
 
 	if (fileExtension !== 'jar') {
-		console.log(`Arquivo não suportado: ${fileName}`);
 		return;
 	}
 
