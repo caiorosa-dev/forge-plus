@@ -7,6 +7,7 @@ import { app } from 'electron';
 
 type DownloadModFileResult = {
 	filePath: string;
+	alreadyExists: boolean;
 }
 
 export async function downloadModFile(versionFile: VersionFile, onProgress?: (progress: number) => void): Promise<DownloadModFileResult> {
@@ -25,7 +26,8 @@ export async function downloadModFile(versionFile: VersionFile, onProgress?: (pr
 	if (fs.existsSync(cacheFilePath)) {
 		onProgress?.(100);
 		return {
-			filePath: cacheFilePath
+			filePath: cacheFilePath,
+			alreadyExists: true
 		};
 	}
 
@@ -56,6 +58,7 @@ export async function downloadModFile(versionFile: VersionFile, onProgress?: (pr
 	});
 
 	return {
-		filePath: cacheFilePath
+		filePath: cacheFilePath,
+		alreadyExists: false
 	};
 }

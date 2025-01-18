@@ -4,14 +4,14 @@ import axios from 'axios';
 import { ProjectInfo } from '../../../types/project-info';
 import { app } from 'electron';
 
-export async function getProjectInfo(projectId: string): Promise<ProjectInfo> {
+export async function getProjectInfo(projectId: string, ignoreCache?: boolean): Promise<ProjectInfo> {
 	const cacheInfoDirectory = path.join(app.getPath('appData'), 'Forge Plus', 'app-cache', 'info');
 
 	const cacheInfoPath = path.join(cacheInfoDirectory, `${projectId}.json`);
 
 	let modInfo = null;
 
-	if (fs.existsSync(cacheInfoPath)) {
+	if (fs.existsSync(cacheInfoPath) && !ignoreCache) {
 		const cachedData = JSON.parse(fs.readFileSync(cacheInfoPath, 'utf-8'));
 		modInfo = cachedData;
 	} else {

@@ -16,7 +16,7 @@ export async function installModpack(modpack: Modpack, versionTag: string, onPro
 	cleanInstanceModsFolder(modpack.curseForgeInstanceName);
 
 	for (const file of version.files) {
-		const { filePath } = await downloadModFile(file, (progress) => {
+		const { filePath, alreadyExists } = await downloadModFile(file, (progress) => {
 			onProgress({
 				currentProjectId: file.projectId.toString(),
 				currentFileId: file.fileId.toString(),
@@ -28,7 +28,8 @@ export async function installModpack(modpack: Modpack, versionTag: string, onPro
 			instanceName: modpack.curseForgeInstanceName,
 			cachedFilePath: filePath,
 			projectId: file.projectId.toString(),
-			fileId: file.fileId.toString()
+			fileId: file.fileId.toString(),
+			ignoreProjectInfoCache: alreadyExists
 		});
 
 		onQueueRemove(file.projectId.toString());

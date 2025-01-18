@@ -9,12 +9,13 @@ type CopyModFileToModsFolderPayload = {
 	cachedFilePath: string;
 	projectId: string;
 	fileId: string;
+	ignoreProjectInfoCache?: boolean;
 }
 
 export async function copyModFileToModsFolder(payload: CopyModFileToModsFolderPayload) {
 	const modsFolder = getModsFolder(payload.instanceName);
 
-	const projectInfo = await getProjectInfo(payload.projectId);
+	const projectInfo = await getProjectInfo(payload.projectId, payload.ignoreProjectInfoCache);
 
 	const fileInfo = projectInfo.files.find(file => file.id === Number(payload.fileId)) || projectInfo.files[0];
 
