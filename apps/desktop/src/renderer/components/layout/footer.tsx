@@ -10,7 +10,7 @@ export function Footer() {
 		<footer className='p-2 rounded flex justify-center items-center gap-2 relative'>
 			<Logo size='small' />
 			<p className='text-slate-400 text-sm'>
-				v1.0.0
+				v1.1.0
 			</p>
 			<Popover>
 				<PopoverTrigger asChild>
