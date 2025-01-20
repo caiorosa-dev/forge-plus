@@ -15,8 +15,8 @@ if (require('electron-squirrel-startup')) {
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 720,
+    width: 1400,
+    height: 890,
     minWidth: 1000,
     minHeight: 600,
     title: 'Forge Plus',

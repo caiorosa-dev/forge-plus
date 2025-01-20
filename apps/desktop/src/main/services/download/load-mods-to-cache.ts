@@ -6,8 +6,8 @@ import { getModsFolder } from '../../helpers/get-mods-folder';
 import { getModsFromFolder } from '../curse-forge/get-mods-from-folder';
 import { saveModFileToCache } from './save-mod-file-to-cache';
 
-export function loadModsFromFolderToCache(modpack: Modpack, projectInfos: ProjectInfo[]) {
-	const modFilesList = getModsFromFolder(modpack.curseForgeInstanceName);
+export async function loadModsFromFolderToCache(modpack: Modpack, projectInfos: ProjectInfo[]) {
+	const modFilesList = await getModsFromFolder(modpack.curseForgeInstanceName);
 
 	for (let i = 0; i < projectInfos.length; i++) {
 		const projectInfo = projectInfos[i];

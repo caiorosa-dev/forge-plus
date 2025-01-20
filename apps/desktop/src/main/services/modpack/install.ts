@@ -13,7 +13,7 @@ export type InstallProgressCallbackParams = {
 export async function installModpack(modpack: Modpack, versionTag: string, onProgress: (params: InstallProgressCallbackParams) => void, onQueueRemove: (projectId: string) => void) {
 	const version = modpack.versions.find(version => version.tag === versionTag);
 
-	cleanInstanceModsFolder(modpack.curseForgeInstanceName);
+	await cleanInstanceModsFolder(modpack.curseForgeInstanceName);
 
 	for (const file of version.files) {
 		const { filePath, alreadyExists } = await downloadModFile(file, (progress) => {
@@ -35,5 +35,5 @@ export async function installModpack(modpack: Modpack, versionTag: string, onPro
 		onQueueRemove(file.projectId.toString());
 	}
 
-	createLocalModpackFile(modpack.id, versionTag);
+	await createLocalModpackFile(modpack.id, versionTag);
 }

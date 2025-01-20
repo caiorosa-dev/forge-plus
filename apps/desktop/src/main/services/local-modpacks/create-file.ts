@@ -1,18 +1,19 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { LocalModpack } from '../../../types/modpack';
 import { app } from 'electron';
+import { asyncFileExists } from '../../helpers/file-exists';
 
-export function createLocalModpackFile(modpackId: string, versionTag: string) {
+export async function createLocalModpackFile(modpackId: string, versionTag: string) {
 	const installedModpacksDir = path.join(app.getPath('appData'), 'Forge Plus', 'modpacks');
 
-	if (!fs.existsSync(installedModpacksDir)) {
-		fs.mkdirSync(installedModpacksDir, { recursive: true });
+	if (!await asyncFileExists(installedModpacksDir)) {
+		await fs.mkdir(installedModpacksDir, { recursive: true });
 	}
 
 	const modpackFilePath = path.join(installedModpacksDir, `${modpackId}.json`);
-	if (fs.existsSync(modpackFilePath)) {
-		fs.rmSync(modpackFilePath);
+	if (await asyncFileExists(modpackFilePath)) {
+		await fs.rm(modpackFilePath);
 	}
 
 	const modpackData: LocalModpack = {
@@ -20,5 +21,5 @@ export function createLocalModpackFile(modpackId: string, versionTag: string) {
 		installedVersionTag: versionTag
 	};
 
-	fs.writeFileSync(modpackFilePath, JSON.stringify(modpackData, null, 2), 'utf-8');
+	await fs.writeFile(modpackFilePath, JSON.stringify(modpackData, null, 2), 'utf-8');
 }

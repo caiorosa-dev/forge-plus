@@ -1,9 +1,9 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import { getModsFolder } from '../../helpers/get-mods-folder';
 
-export function cleanInstanceModsFolder(instanceName: string) {
+export async function cleanInstanceModsFolder(instanceName: string) {
 	const modsFolder = getModsFolder(instanceName);
 
-	fs.rmSync(modsFolder, { recursive: true, force: true });
-	fs.mkdirSync(modsFolder, { recursive: true });
+	await fs.rm(modsFolder, { recursive: true, force: true });
+	await fs.mkdir(modsFolder, { recursive: true });
 }

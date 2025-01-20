@@ -23,14 +23,14 @@ export function registerIPCHandlers() {
 	 * C:\Users\{USER}\curseforge\minecraft\Instances
 	 */
 	ipcMain.handle('curse-forge:get-instances', async () => {
-		return getCurseForgeInstances();
+		return await getCurseForgeInstances();
 	});
 
 	/**
 	 * Retorna a lista de modpacks instalados no sistema
 	 */
 	ipcMain.handle('local-modpacks:get-all', async () => {
-		return getLocalModpacks();
+		return await getLocalModpacks();
 	});
 
 	/**
@@ -85,7 +85,8 @@ export function registerIPCHandlers() {
 			return;
 		}
 
-		const installedModpack = getLocalModpacks().find(localModpack => localModpack.modpackId === modpackId);
+		const localModpacks = await getLocalModpacks();
+		const installedModpack = localModpacks.find(localModpack => localModpack.modpackId === modpackId);
 
 		if (installedModpack && installedModpack.installedVersionTag === versionTag) {
 			event.sender.send('modpack:install:error', {
@@ -95,7 +96,7 @@ export function registerIPCHandlers() {
 			return;
 		}
 
-		const instances = getCurseForgeInstances();
+		const instances = await getCurseForgeInstances();
 
 		if (!instances.includes(modpack.curseForgeInstanceName)) {
 			event.sender.send('modpack:install:error', {
@@ -110,7 +111,7 @@ export function registerIPCHandlers() {
 		});
 
 		if (loadToCache) {
-			loadModsFromFolderToCache(modpack, projectInfos);
+			await loadModsFromFolderToCache(modpack, projectInfos);
 		}
 
 		event.sender.send('modpack:install:queue:start', {
@@ -153,11 +154,12 @@ export function registerIPCHandlers() {
 		} catch (error) {
 			console.error(error);
 			event.sender.send('modpack:install:error', {
-				message: 'Erro ao instalar o modpack, tente novamente...'
+				message: `Erro ao instalar o modpack, tente novamente... (${error.message})`,
 			});
+			return;
 		}
 
-		createLocalModpackFile(modpackId, versionTag);
+		await createLocalModpackFile(modpackId, versionTag);
 		event.sender.send('modpack:install:success');
 	});
 

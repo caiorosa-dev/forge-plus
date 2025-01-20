@@ -1,30 +1,33 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { LocalModpack } from '../../../types/modpack';
 import { app } from 'electron';
+import { asyncFileExists } from '../../helpers/file-exists';
 
-export function getLocalModpacks(): LocalModpack[] {
+export async function getLocalModpacks(): Promise<LocalModpack[]> {
 	const installedModpacksDir = path.join(app.getPath('appData'), 'Forge Plus', 'modpacks');
 
-	if (!fs.existsSync(installedModpacksDir)) {
+	if (!await asyncFileExists(installedModpacksDir)) {
 		return [];
 	}
 
-	const installedModpacks = fs.readdirSync(installedModpacksDir, { withFileTypes: true })
+	const dirents = await fs.readdir(installedModpacksDir, { withFileTypes: true });
+	const installedModpacksPromises = dirents
 		.filter(dirent => dirent.isFile() && dirent.name.endsWith('.json'))
-		.map(dirent => {
+		.map(async dirent => {
 			const modpackPath = path.join(installedModpacksDir, dirent.name);
 
-			if (fs.existsSync(modpackPath)) {
-				const modpackData = fs.readFileSync(modpackPath, 'utf-8');
+			try {
+				await fs.access(modpackPath);
+				const modpackData = await fs.readFile(modpackPath, 'utf-8');
 				const manifest = JSON.parse(modpackData);
 
 				return manifest;
+			} catch {
+				return null;
 			}
+		});
 
-			return null;
-		})
-		.filter(modpack => modpack !== null);
-
-	return installedModpacks;
+	const installedModpacks = await Promise.all(installedModpacksPromises);
+	return installedModpacks.filter(modpack => modpack !== null) as LocalModpack[];
 }

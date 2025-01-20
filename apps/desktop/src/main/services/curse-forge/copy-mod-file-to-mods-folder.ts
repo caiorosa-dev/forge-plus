@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs';
+import fs from 'fs/promises';
 
 import { getProjectInfo } from '../project-info/get';
 import { getModsFolder } from '../../helpers/get-mods-folder';
@@ -28,5 +28,5 @@ export async function copyModFileToModsFolder(payload: CopyModFileToModsFolderPa
 		return;
 	}
 
-	fs.copyFileSync(payload.cachedFilePath, finalFilePath);
+	await fs.copyFile(payload.cachedFilePath, finalFilePath);
 }

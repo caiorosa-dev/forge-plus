@@ -1,9 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { createWriteStream } from 'fs';
 
 import { VersionFile } from '../../../types/modpack';
 import { app } from 'electron';
+import { asyncFileExists } from '../../helpers/file-exists';
 
 type DownloadModFileResult = {
 	filePath: string;
@@ -23,7 +25,8 @@ export async function downloadModFile(versionFile: VersionFile, onProgress?: (pr
 		}
 	}
 
-	if (fs.existsSync(cacheFilePath)) {
+
+	if (await asyncFileExists(cacheFilePath)) {
 		onProgress?.(100);
 		return {
 			filePath: cacheFilePath,
@@ -31,14 +34,14 @@ export async function downloadModFile(versionFile: VersionFile, onProgress?: (pr
 		};
 	}
 
-	fs.mkdirSync(cacheFilesDir, { recursive: true });
+	await fs.mkdir(cacheFilesDir, { recursive: true });
 
-	const writerStream = fs.createWriteStream(cacheFilePath);
 	const response = await axios.get(url, requestConfig);
 
 	const totalLength = Number(response.headers['content-length'] || 0);
 	let downloaded = 0;
 
+	const writerStream = createWriteStream(cacheFilePath);
 	response.data.on('data', (chunk: Buffer) => {
 		downloaded += chunk.length;
 		const progressPercentage = totalLength ? (downloaded / totalLength) * 100 : 0;

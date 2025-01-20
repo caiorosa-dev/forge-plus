@@ -1,16 +1,17 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { app } from 'electron';
+import { asyncFileExists } from '../../helpers/file-exists';
 
-export function saveModFileToCache(modFilePath: string, { projectId, fileId }: { projectId: string, fileId: string }): string {
+export async function saveModFileToCache(modFilePath: string, { projectId, fileId }: { projectId: string, fileId: string }): Promise<string> {
 	const cacheFilesDir = path.join(app.getPath('appData'), 'Forge Plus', 'app-cache', 'files');
 	const cacheFilePath = path.join(cacheFilesDir, `${projectId}-${fileId}`);
 
-	if (!fs.existsSync(cacheFilesDir)) {
-		fs.mkdirSync(cacheFilesDir, { recursive: true });
+	if (!await asyncFileExists(cacheFilesDir)) {
+		await fs.mkdir(cacheFilesDir, { recursive: true });
 	}
 
-	fs.copyFileSync(modFilePath, cacheFilePath);
+	await fs.copyFile(modFilePath, cacheFilePath);
 
 	return cacheFilePath;
 }
