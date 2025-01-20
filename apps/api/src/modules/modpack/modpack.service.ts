@@ -15,6 +15,9 @@ export class ModpackService {
 						createdAt: 'desc'
 					}
 				}
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
 		});
 	}
